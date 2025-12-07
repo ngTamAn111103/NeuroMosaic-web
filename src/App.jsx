@@ -23,6 +23,7 @@ function App() {
         setLayout={setLayout}
         imageCount={imageCount}
         setImageCount={setImageCount}
+        max={data_images.length}
       />
       {/* Thế giới 3D */}
       <Canvas camera={{ position: [0, 0, 20], fov: 60 }}>

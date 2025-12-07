@@ -26,8 +26,9 @@ const UIOverlay = ({
     LAYOUTS.find((l) => l.id === currentLayout) || LAYOUTS[0];
 
   const handleAdjustCount = (amount) => {
-    const newValue = imageCount + amount;
-    if (newValue >= min && newValue <= max) setImageCount(newValue);
+    const targetValue = imageCount + amount;
+    const clampedValue = Math.min(Math.max(targetValue, min), max);
+    setImageCount(clampedValue);
   };
 
   return (
@@ -132,7 +133,7 @@ const UIOverlay = ({
               {/* Nút Giảm */}
               <button
                 onClick={() => handleAdjustCount(-step)}
-                disabled={imageCount <= min}
+                disabled={imageCount === min}
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 transition-all hover:bg-white/20 hover:text-red-400 active:scale-95 disabled:opacity-30"
               >
                 <svg width="12" height="2" fill="currentColor">
@@ -148,7 +149,7 @@ const UIOverlay = ({
               {/* Nút Tăng */}
               <button
                 onClick={() => handleAdjustCount(step)}
-                disabled={imageCount >= max}
+                disabled={imageCount === max}
                 className="flex h-10 w-10 items-center justify-center rounded-lg bg-white/5 transition-all hover:bg-white/20 hover:text-green-400 active:scale-95 disabled:opacity-30"
               >
                 <svg
