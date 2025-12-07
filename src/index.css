@@ -1,1 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=JetBrains+Mono:wght@400;700&display=swap');
 @import "tailwindcss";
+
+/* 3. Cấu hình Global cho ứng dụng 3D */
+@layer base {
+  html, body, #root {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* QUAN TRỌNG: Chặn thanh cuộn của trình duyệt để OrbitControls hoạt động mượt */
+    background-color: #050505; /* Màu nền dự phòng khi 3D chưa load */
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: white;
+  }
+
+  /* Font cho các con số (FPS, Count) nhìn cho giống Data Dashboard */
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* 4. Tùy chỉnh màu khi bôi đen text (Selection) */
+::selection {
+  background-color: rgba(34, 211, 238, 0.3); /* Màu Cyan mờ */
+  color: #22d3ee; /* Màu chữ Cyan sáng */
+}
+
+/* 5. Custom Scrollbar (Dùng cho danh sách Layouts trong Dropdown) */
+/* Áp dụng cho class .custom-scrollbar hoặc mặc định toàn trang */
+@layer utilities {
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px; /* Thanh cuộn mỏng */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.02); /* Nền đường ray */
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.15); /* Thanh kéo màu xám mờ */
+    border-radius: 4px;
+    transition: background 0.3s;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(34, 211, 238, 0.5); /* Hover vào đổi màu Cyan */
+  }
+  
+  /* Tiện ích ẩn thanh cuộn nhưng vẫn cuộn được (cho Firefox/IE) */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* 6. Hiệu ứng Animation bổ trợ (Nếu cần) */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
