@@ -12,16 +12,24 @@ import ImageItem from "./components/ImageItem";
 import UIOverlay from "./components/UIOverlay";
 
 function App() {
+  // useState
+  const [imageCount, setImageCount] = useState(20);
+  const [layout, setLayout] = useState("random");
   return (
     <div className="relative h-screen w-full bg-black">
       {/* UI Overlay */}
-      <UIOverlay />
+      <UIOverlay
+        currentLayout={layout}
+        setLayout={setLayout}
+        imageCount={imageCount}
+        setImageCount={setImageCount}
+      />
       {/* Thế giới 3D */}
       <Canvas camera={{ position: [0, 0, 20], fov: 60 }}>
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
-        {data_images.map((img) => (
+        {data_images.slice(0, imageCount).map((img) => (
           <Suspense key={img.id} fallback={null}>
             <ImageItem url={img.thumbnail} position={img.position} />
           </Suspense>
