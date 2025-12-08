@@ -61,7 +61,7 @@ function App() {
           enablePan={true}
           enableZoom={true}
           autoRotate
-          rotateSpeed={0.5}
+          rotateSpeed={0.1}
           minDistance={19}
           maxDistance={21}
         />
