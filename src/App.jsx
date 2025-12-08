@@ -18,9 +18,20 @@ function App() {
   // useState
   const [imageCount, setImageCount] = useState(20);
   const [layout, setLayout] = useState("circle");
-  const [radius, setRadius] = useState(12);
 
   // useMemo
+  // Tính bán kính dựa trên số lượng ảnh
+  const radius = useMemo(() => {
+    if (layout === "sphere") {
+      return 10 + Math.sqrt(imageCount) * 1.5;
+    }
+    if (layout === "circle") {
+      return imageCount * 0.3;
+    }
+    return imageCount * 0.15;
+  }, [imageCount, layout]);
+
+  // tính vị trí của từng ảnh dựa trên số lượng và bán kính
   const visibleImages = useMemo(() => {
     // Cắt số lượng ảnh vừa đủ
     const subset = data_images.slice(0, imageCount);
@@ -57,14 +68,14 @@ function App() {
         ))}
 
         <Stars
-            radius={100}
-            depth={100}
-            count={3000}
-            factor={3}
-            saturation={1}
-            fade
-            speed={0.5}
-          />
+          radius={100}
+          depth={100}
+          count={3000}
+          factor={3}
+          saturation={1}
+          fade
+          speed={0.5}
+        />
 
         {/* Camera điều khiển chuột */}
         <OrbitControls
@@ -72,8 +83,8 @@ function App() {
           enableZoom={true}
           autoRotate
           rotateSpeed={0.1}
-          minDistance={19}
-          maxDistance={21}
+          // minDistance={19}
+          // maxDistance={21}
         />
       </Canvas>
     </div>
