@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState } from "react";
+import { Suspense, useMemo, useState, useRef } from "react";
 // Canvas
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
@@ -10,6 +10,7 @@ import data_images from "./data_images.json";
 // Components
 import ImageItem from "./components/ImageItem";
 import UIOverlay from "./components/UIOverlay";
+import CameraRig from "./components/CameraRig"; // Hoặc để chung file
 
 // Hàm tính toán
 import { getCircleLayout } from "./utils/layouts";
@@ -18,6 +19,9 @@ function App() {
   // useState
   const [imageCount, setImageCount] = useState(20);
   const [layout, setLayout] = useState("circle");
+  // useRef
+  // Tạo Ref để nắm đầu OrbitControls -> Nếu đang di chuyển camera do R tăng => Khoá zoom
+  const controlsRef = useRef();
 
   // useMemo
   // Tính bán kính dựa trên số lượng ảnh
@@ -60,6 +64,9 @@ function App() {
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
+        {/* Camera lùi lại khi tăng số lượng ảnh */}
+        <CameraRig radius={radius} controlsRef={controlsRef} />
+        
         {/* Chỉ render dựa trên số lượng ảnh đang chọn */}
         {visibleImages.map((img) => (
           <Suspense key={img.id} fallback={null}>
@@ -80,6 +87,7 @@ function App() {
         <OrbitControls
           enablePan={true}
           enableZoom={true}
+          ref={controlsRef}
           autoRotate
           rotateSpeed={0.1}
           // minDistance={19}
