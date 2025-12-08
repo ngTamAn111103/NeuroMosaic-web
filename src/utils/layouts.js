@@ -8,24 +8,32 @@ import * as THREE from "three";
  */
 export const getCircleLayout = (images, radius = 10) => {
   const total = images.length;
-  // Góc giữa các ảnh (tính bằng radian)
   const angleStep = (2 * Math.PI) / total;
 
-  return images.map((img, i) => {
-    // 1. Tính góc theta cho ảnh thứ i
-    // Bạn có thể cộng thêm Math.PI nếu muốn điểm bắt đầu ở vị trí khác
-    const theta = i * angleStep;
+  // 🔥 TÍNH GÓC BÙ (OFFSET)
+  // Mục tiêu: Ảnh cuối cùng (index = total - 1) phải nằm ở góc PI (180 độ - Sau lưng).
+  // Công thức hiện tại: Angle = index * step.
+  // Ta muốn: (total - 1) * step + OFFSET = PI.
+  // Suy ra: OFFSET = PI - ((total - 1) * step).
+  
+  const rotationOffset = Math.PI - ((total - 1) * angleStep);
 
-    // 2. Tính toạ độ (Theo công thức bạn yêu cầu)
-    // Trục Y = 0 để ảnh nằm trên mặt phẳng ngang
+  return images.map((img, i) => {
+    // Cộng thêm Offset vào góc
+    const theta = i * angleStep + rotationOffset;
+
     const x = radius * Math.cos(theta);
-    const y = 0;
+    const y = 0; 
     const z = radius * Math.sin(theta);
+
+    // Tính rotation Y để ảnh hướng vào tâm
+    // Lưu ý: Cộng thêm rotationOffset vào logic xoay
+    const rotY = -theta + (Math.PI / 2) + Math.PI; 
 
     return {
       ...img,
-      // Trả về mảng toạ độ chuẩn Three.js
       position: [x, y, z],
+      rotation: [0, rotY, 0] 
     };
   });
 };
