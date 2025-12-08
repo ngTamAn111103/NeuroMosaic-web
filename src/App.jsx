@@ -18,7 +18,6 @@ import { getCircleLayout, getSphereLayout } from "./utils/layouts";
 // Cấu hình từng mode
 import { LAYOUT_CONFIGS } from "./utils/layoutConfigs";
 
-
 function App() {
   // useState
   const [imageCount, setImageCount] = useState(20);
@@ -85,19 +84,21 @@ function App() {
           position={config.initialCameraPosition}
           controlsRef={controlsRef}
         />
-        {/* Chỉ render dựa trên số lượng ảnh đang chọn */}
-        {visibleImages.map((img) => (
-          <Suspense key={img.id} fallback={null}>
+
+        <Suspense fallback={null}>
+          {/* Chỉ render khi mode == sphere */}
+          {layout === "sphere" && <SphereCore radius={radius} />}
+
+          {/* Render List Ảnh */}
+          {visibleImages.map((img) => (
             <ImageItem
               url={img.thumbnail}
               position={img.position}
               layout={layout}
               doubleSide={config.doubleSide} //render mặt lưng ảnh
             />
-          </Suspense>
-        ))}
-        {/* Chỉ hiện khi ở mode Sphere */}
-        {layout === "sphere" && <SphereCore radius={radius} />}
+          ))}
+        </Suspense>
 
         <Stars
           radius={100}

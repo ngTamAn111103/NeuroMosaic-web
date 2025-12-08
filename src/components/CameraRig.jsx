@@ -2,10 +2,10 @@ import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { useRef } from "react";
 
-const CameraRig = ({ radius, controlsRef }) => {
+const CameraRig = ({ radius, controlsRef, mode = "C" }) => {
   // Khởi tạo danh sách trạng thái
   const state = useRef({
-    prevRadius: radius, // Lưu bán kính cũ để so sánh
+    prevRadius: null, // Lưu bán kính cũ để so sánh
     isAutoAdjusting: false, // Camera có đang tự chạy không?
   });
 
@@ -17,7 +17,12 @@ const CameraRig = ({ radius, controlsRef }) => {
 
     // Kiểm tra bán kính có thay đổi so với trước đây không
     // 0.05: tránh lỗi thập phân nhỏ
-    if (Math.abs(radius - internalState.prevRadius) > 0.05) {
+    
+    // 🔥 [BỔ SUNG]: Thêm điều kiện "internalState.prevRadius === null"
+    // Ý NGHĨA: Nếu là lần đầu tiên chạy (F5 trang), hãy coi như radius đã thay đổi.
+    // TÁC DỤNG: Bắt buộc camera phải tính toán lại vị trí ngay lập tức, 
+    // tránh trường hợp camera đứng yên ở vị trí mặc định của Config.
+    if (internalState.prevRadius === null || Math.abs(radius - internalState.prevRadius) > 0.05) {
       // Cập nhật lại radius mới
       internalState.prevRadius = radius;
       // Bật cờ: hệ thống đang tự di chuyển camera -> Khoá zoom bằng chuột
@@ -29,10 +34,22 @@ const CameraRig = ({ radius, controlsRef }) => {
       }
     }
 
-    // Đích đến của camera = Radius + 0 + (Căn bậc 2 của Radius * 2)
-    // Giúp camera lùi xa nhưng không lùi quá đà khi số lượng ảnh cực lớn
-    // + 0: Tăng giảm để camera xa gần thêm (Mặc định ko cần)
-    let targetDistance = radius + 0 + Math.sqrt(radius) * 2;
+    // 🔥 [BỔ SUNG]: Logic tính toán Đích đến (Target) linh hoạt theo Mode
+    // Thay vì code cứng công thức Mode C, ta chia trường hợp:
+    let targetDistance = 20; // Giá trị mặc định
+
+    if (mode === "A") {
+      // --- MODE A (Dành cho Sphere) ---
+      // Sphere cần nhìn toàn cảnh để không bị cắt đỉnh/đáy
+      const fovRad = (camera.fov * Math.PI) / 180;
+      targetDistance = radius / Math.sin(fovRad / 2);
+    } else {
+      // --- MODE C (Dành cho Circle - Code cũ của bạn) ---
+      // Đích đến của camera = Radius + 0 + (Căn bậc 2 của Radius * 2)
+      // Giúp camera lùi xa nhưng không lùi quá đà khi số lượng ảnh cực lớn
+      // + 0: Tăng giảm để camera xa gần thêm (Mặc định ko cần)
+      targetDistance = radius + 0 + Math.sqrt(radius) * 2;
+    }
 
     if (internalState.isAutoAdjusting) {
       // Lấy vector độ dài của camera hiện tại so với tâm
