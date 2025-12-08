@@ -12,7 +12,7 @@ const tempTargetPos = new THREE.Vector3(); // Nơi chứa kết quả xyz tiếp
 const MIN_OPACITY = 0.1; // Độ mờ tối thiểu (khi ảnh ở rìa/sau lưng)
 const MAX_OPACITY = 1.0; // Độ rõ tối đa (khi ảnh ở mặt tiền)
 
-function ImageItem({ url, position }) {
+function ImageItem({ url, position, layout, doubleSide = false }) {
   // Load texture (có cache tự động)
   const texture = useTexture(url);
 
@@ -39,8 +39,16 @@ function ImageItem({ url, position }) {
   useFrame(({ camera }, delta) => {
     // Chỉ chạy khi mesh và material đã sẵn sàng
     if (ref.current && materialRef.current) {
-      // ảnh luôn quay mặt về phía camera
-      ref.current.lookAt(camera.position);
+      if (layout === "sphere") {
+        ref.current.lookAt(
+          ref.current.position.x * 2,
+          ref.current.position.y * 2,
+          ref.current.position.z * 2,
+        );
+      } else if ((layout = "circle")) {
+        // ảnh luôn quay mặt về phía camera
+        ref.current.lookAt(camera.position);
+      }
 
       // Lấy vị trí đích từ props truyền vào
       tempTargetPos.set(...position);
@@ -80,7 +88,7 @@ function ImageItem({ url, position }) {
       } else {
         // nếu vẫn ở 0,0,0
         // ép nó rời khỏi tâm
-        tempNormal.set(0, 0, 1)        
+        tempNormal.set(0, 0, 1);
       }
 
       // Tính vector nhìn (Hướng từ camera vào ảnh)
@@ -153,6 +161,7 @@ function ImageItem({ url, position }) {
         map={texture}
         ref={materialRef}
         transparent={true} // Khởi tạo là true để có thể fade lúc đầu
+        side={doubleSide ? THREE.DoubleSide : THREE.FrontSide}
       />
     </mesh>
   );

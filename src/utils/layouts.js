@@ -42,19 +42,35 @@ export const getCircleLayout = (images, radius = 10) => {
  * (Gợi ý) Layout hình cầu Fibonacci - Bạn có thể dùng sau này
  */
 export const getSphereLayout = (images, radius) => {
-  // Dùng thuật toán Fibonacci Sphere để rải đều ảnh lên mặt cầu
   const phi = Math.PI * (3 - Math.sqrt(5)); // Góc vàng
   const total = images.length;
 
+  
+  const limits = 0.98; 
+
   return images.map((img, i) => {
-    const y = 1 - (i / (total - 1)) * 2; // y đi từ 1 xuống -1
-    const radiusAtY = Math.sqrt(1 - y * y); // Bán kính tại lát cắt y
+    // Xử lý trường hợp đặc biệt để tránh chia cho 0
+    if (total === 1) {
+      return { ...img, position: [0, 0, radius] };
+    }
+
+    // --- LOGIC TỪ DỰ ÁN CŨ CỦA BẠN ---
+    const ratio = i / (total - 1); // Chạy từ 0 đến 1
+    
+    // Biến đổi y chạy trong khoảng [limits, -limits]
+    // Ví dụ limits = 0.9 thì y chạy từ 0.9 xuống -0.9
+    const y = limits - (ratio * (limits * 2));
+
+    // Tính bán kính tại lát cắt y hiện tại
+    // Math.max(0, ...) là lưới an toàn để không bao giờ bị căn bậc 2 của số âm
+    const radiusAtY = Math.sqrt(Math.max(0, 1 - y * y));
+    
     const theta = phi * i; 
 
+    // Tính toạ độ x, z
     const x = Math.cos(theta) * radiusAtY * radius;
     const z = Math.sin(theta) * radiusAtY * radius;
     
-    // Trả về vị trí mới, ImageItem sẽ tự lo việc bay nhảy animation
     return {
       ...img,
       position: [x, y * radius, z] 

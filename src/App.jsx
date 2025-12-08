@@ -1,7 +1,7 @@
 import { Suspense, useMemo, useState, useRef } from "react";
 // Canvas
 import { Canvas, useLoader } from "@react-three/fiber";
-import { TextureLoader } from "three";
+import { MeshBasicMaterial, SphereGeometry, TextureLoader } from "three";
 import { OrbitControls, Stars } from "@react-three/drei";
 
 // Data ảnh
@@ -11,11 +11,13 @@ import data_images from "./data_images.json";
 import ImageItem from "./components/ImageItem";
 import UIOverlay from "./components/UIOverlay";
 import CameraRig from "./components/CameraRig"; // Hoặc để chung file
-
+import SphereCore from "./components/SphereCore"; // Cầu lưới cho mode Sphere
+import CameraResetter from "./components/CameraResetter"; // Camera tốc biến về initialCameraPosition khi đổi mode
 // Hàm tính toán
 import { getCircleLayout, getSphereLayout } from "./utils/layouts";
 // Cấu hình từng mode
 import { LAYOUT_CONFIGS } from "./utils/layoutConfigs";
+
 
 function App() {
   // useState
@@ -78,13 +80,25 @@ function App() {
 
         {/* Camera lùi lại khi tăng số lượng ảnh */}
         <CameraRig radius={radius} controlsRef={controlsRef} />
-
+        {/* Tự động reset góc nhìn khi đổi mode  */}
+        <CameraResetter
+          position={config.initialCameraPosition}
+          controlsRef={controlsRef}
+        />
         {/* Chỉ render dựa trên số lượng ảnh đang chọn */}
         {visibleImages.map((img) => (
           <Suspense key={img.id} fallback={null}>
-            <ImageItem url={img.thumbnail} position={img.position} />
+            <ImageItem
+              url={img.thumbnail}
+              position={img.position}
+              layout={layout}
+              doubleSide={config.doubleSide} //render mặt lưng ảnh
+            />
           </Suspense>
         ))}
+        {/* Chỉ hiện khi ở mode Sphere */}
+        {layout === "sphere" && <SphereCore radius={radius} />}
+
         <Stars
           radius={100}
           depth={100}
