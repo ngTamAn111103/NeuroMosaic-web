@@ -7,6 +7,9 @@ import * as THREE from "three";
 const tempNormal = new THREE.Vector3();
 const tempView = new THREE.Vector3();
 
+// Hằng số
+const MIN_OPACITY = 0.1;
+const MAX_OPACITY = 1;
 function ImageItem({ url, position }) {
   // Tải ảnh và biến thành Texture -> dán lên mesh
   // useTexture có cơ chế cache, giúp tránh load trùng -> Thích hợp tương lai làm tính năng số lượng ảnh ít hơn thực tế
@@ -29,13 +32,23 @@ function ImageItem({ url, position }) {
       const dot = tempNormal.dot(tempView);
 
       // Dựa vào dot chạy từ -1 đến 1
-      const targetOpacity = dot < 0 ? 0.1 : 1;
+      // Hàm mapLinear: Biến đổi giá trị dot từ khoảng [-0.2, 0.2] sang [0, 1]
+      // clamp: Để cắt bỏ các giá trị thừa (dưới 0 thì vẫn là 0, trên 1 thì vẫn là 1)
+      let targetOpacity = THREE.MathUtils.mapLinear(dot, -0.2, 0.2, MIN_OPACITY, MAX_OPACITY);
+      targetOpacity = THREE.MathUtils.clamp(targetOpacity, MIN_OPACITY, MAX_OPACITY);
 
       materialRef.current.opacity = THREE.MathUtils.lerp(
         materialRef.current.opacity,
         targetOpacity,
         0.05,
       );
+
+      // Khi opacity đã gần bằng 1 (> 0.99), tắt chế độ trong suốt đi
+      const isOpaque = materialRef.current.opacity >= 0.99;
+      if (materialRef.current.transparent === isOpaque) {
+        materialRef.current.transparent = !isOpaque;
+        materialRef.current.needsUpdate = true;
+      }
     }
   });
   return (
@@ -43,11 +56,11 @@ function ImageItem({ url, position }) {
     <mesh position={position} ref={ref}>
       <planeGeometry args={[1, 1]} />
       {/* toneMapped={false}: không bị “wash out”. */}
-      <meshBasicMaterial 
-      map={texture} 
-      ref={materialRef}
-      transparent={true} // Bật để opacity
-
+      <meshBasicMaterial
+        map={texture}
+        ref={materialRef}
+        transparent={true} // Bật để opacity
+        // side={THREE.DoubleSide} // hiển thị mặt sau của ảnh
       />
     </mesh>
   );

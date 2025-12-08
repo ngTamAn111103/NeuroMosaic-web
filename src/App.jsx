@@ -56,7 +56,7 @@ function App() {
         max={data_images.length}
       />
       {/* Thế giới 3D */}
-      <Canvas camera={{ position: [0, 5, 20], fov: 60 }}>
+      <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
@@ -66,7 +66,6 @@ function App() {
             <ImageItem url={img.thumbnail} position={img.position} />
           </Suspense>
         ))}
-
         <Stars
           radius={100}
           depth={100}
