@@ -1,4 +1,4 @@
-import * as THREE from 'three';
+import * as THREE from "three";
 
 /**
  * Tính toán vị trí cho Layout hình tròn (Circle)
@@ -19,20 +19,13 @@ export const getCircleLayout = (images, radius = 10) => {
     // 2. Tính toạ độ (Theo công thức bạn yêu cầu)
     // Trục Y = 0 để ảnh nằm trên mặt phẳng ngang
     const x = radius * Math.cos(theta);
-    const y = 0; 
+    const y = 0;
     const z = radius * Math.sin(theta);
-
-    // 3. Tính góc xoay (Bonus)
-    // Để ảnh hướng mặt vào tâm vòng tròn (0,0,0):
-    // Ta lấy góc theta đảo ngược và cộng thêm 90 độ (PI/2) vì Plane mặc định hướng về +Z
-    const rotY = -theta + (Math.PI / 2) + Math.PI; 
-    // Lưu ý: + Math.PI ở cuối là để quay ngược lại 180 độ (nếu ảnh bị quay lưng vào trong)
 
     return {
       ...img,
       // Trả về mảng toạ độ chuẩn Three.js
       position: [x, y, z],
-      rotation: [0, rotY, 0] 
     };
   });
 };
@@ -54,7 +47,7 @@ export const getSphereLayout = (images, radius = 10) => {
 
     // Vector hướng từ tâm ra vật thể (để tính rotation lookAt)
     const position = new THREE.Vector3(x * radius, y * radius, z * radius);
-    
+
     // Tính rotation sao cho ảnh nhìn vào tâm (LookAt center)
     // Đây là logic giả lập, trong R3F bạn có thể dùng <Billboard> hoặc lookAt()
     const dummyObj = new THREE.Object3D();
@@ -64,7 +57,7 @@ export const getSphereLayout = (images, radius = 10) => {
     return {
       ...img,
       position: [position.x, position.y, position.z],
-      rotation: [dummyObj.rotation.x, dummyObj.rotation.y, dummyObj.rotation.z]
+      rotation: [dummyObj.rotation.x, dummyObj.rotation.y, dummyObj.rotation.z],
     };
   });
 };

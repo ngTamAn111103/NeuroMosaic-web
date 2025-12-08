@@ -22,15 +22,17 @@ function App() {
 
   // useMemo
   const visibleImages = useMemo(() => {
+    // Cắt số lượng ảnh vừa đủ
     const subset = data_images.slice(0, imageCount);
+
+    // Chuyển đổi mode
     switch (layout) {
       case "circle":
         return getCircleLayout(subset, radius);
-      
       default:
         return getCircleLayout(subset, radius);
     }
-  }, [imageCount, layout]); // Chạy lại khi 2 biến này đổi
+  }, [imageCount, layout, radius]); // Chạy lại khi 2 biến này đổi
 
   return (
     <div className="relative h-screen w-full bg-black">
@@ -47,6 +49,7 @@ function App() {
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
+        {/* Chỉ render dựa trên số lượng ảnh đang chọn */}
         {visibleImages.map((img) => (
           <Suspense key={img.id} fallback={null}>
             <ImageItem url={img.thumbnail} position={img.position} />
@@ -57,6 +60,8 @@ function App() {
         <OrbitControls
           enablePan={true}
           enableZoom={true}
+          autoRotate
+          rotateSpeed={0.5}
           minDistance={19}
           maxDistance={21}
         />
