@@ -14,11 +14,16 @@ import CameraRig from "./components/CameraRig"; // Hoặc để chung file
 
 // Hàm tính toán
 import { getCircleLayout, getSphereLayout } from "./utils/layouts";
+// Cấu hình từng mode
+import { LAYOUT_CONFIGS } from "./utils/layoutConfigs";
 
 function App() {
   // useState
   const [imageCount, setImageCount] = useState(20);
-  const [layout, setLayout] = useState("circle");
+  const [layout, setLayout] = useState("sphere");
+
+  // Lấy config cho mode hiện tại
+  const config = LAYOUT_CONFIGS[layout];
   // useRef
   // Tạo Ref để nắm đầu OrbitControls -> Nếu đang di chuyển camera do R tăng => Khoá zoom
   const controlsRef = useRef();
@@ -27,7 +32,7 @@ function App() {
   // Tính bán kính dựa trên số lượng ảnh
   const radius = useMemo(() => {
     if (layout === "sphere") {
-      return 10 + Math.sqrt(imageCount) * 1.5;
+      return Math.sqrt(imageCount) / 2;
     }
     if (layout === "circle") {
       return imageCount * 0.3;
@@ -62,7 +67,12 @@ function App() {
         max={Math.min(200, data_images.length)} // hiển thị tối đa 200 ảnh thôi, đỡ lag
       />
       {/* Thế giới 3D */}
-      <Canvas camera={{ position: [0, 2, 15], fov: 60 }}>
+      <Canvas
+        camera={{
+          position: config.initialCameraPosition,
+          fov: config.fov,
+        }}
+      >
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
@@ -91,7 +101,7 @@ function App() {
           enableZoom={true}
           ref={controlsRef}
           autoRotate
-          rotateSpeed={0.1}
+          rotateSpeed={config.rotateSpeed}
           // minDistance={19}
           // maxDistance={21}
         />
