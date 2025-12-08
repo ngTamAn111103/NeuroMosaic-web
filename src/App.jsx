@@ -2,7 +2,7 @@ import { Suspense, useMemo, useState } from "react";
 // Canvas
 import { Canvas, useLoader } from "@react-three/fiber";
 import { TextureLoader } from "three";
-import { OrbitControls } from "@react-three/drei";
+import { OrbitControls, Stars } from "@react-three/drei";
 
 // Data ảnh
 import data_images from "./data_images.json";
@@ -55,6 +55,16 @@ function App() {
             <ImageItem url={img.thumbnail} position={img.position} />
           </Suspense>
         ))}
+
+        <Stars
+            radius={100}
+            depth={100}
+            count={3000}
+            factor={3}
+            saturation={1}
+            fade
+            speed={0.5}
+          />
 
         {/* Camera điều khiển chuột */}
         <OrbitControls
