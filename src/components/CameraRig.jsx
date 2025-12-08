@@ -54,7 +54,7 @@ const CameraRig = ({ radius, controlsRef }) => {
           currentDistance, // Vị trí hiện tại
           targetDistance, // Vị trí muốn tới
           2.5, // Độ căng lò xo (Càng to càng nhanh)
-          delta, // Thời gian trôi qua giữa 2 frame
+          delta, // Thời gian trôi qua giữa 2 frame => Coi như độ dài giữa các step di chuyển camera
         );
 
         // Cập nhật vị trí mới cho camera
