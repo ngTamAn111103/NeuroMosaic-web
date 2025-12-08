@@ -3,7 +3,7 @@ import React, { useState } from "react";
 // Danh sách Layout (Bạn có thể thêm thoải mái vào đây sau này)
 const LAYOUTS = [
   { id: "sphere", label: "Sphere", desc: "Cấu trúc hình cầu", icon: "🌍" },
-  { id: "circle", label: "Circle", desc: "Vòng tròn đơn", icon: "⭕" },
+  { id: "circle", label: "Circle", desc: "Vòng tròn đơn/Cưỡi ngựa xem hoa", icon: "⭕" },
   { id: "cone", label: "Cone", desc: "Hình nón xoắn", icon: "🍦" },
   { id: "grid", label: "Grid Wall", desc: "Tường phẳng", icon: "🧱" },
   { id: "spiral", label: "Spiral", desc: "Xoắn ốc vô cực", icon: "🌀" },

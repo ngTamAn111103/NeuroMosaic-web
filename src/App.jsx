@@ -13,7 +13,7 @@ import UIOverlay from "./components/UIOverlay";
 import CameraRig from "./components/CameraRig"; // Hoặc để chung file
 
 // Hàm tính toán
-import { getCircleLayout } from "./utils/layouts";
+import { getCircleLayout, getSphereLayout } from "./utils/layouts";
 
 function App() {
   // useState
@@ -44,6 +44,8 @@ function App() {
     switch (layout) {
       case "circle":
         return getCircleLayout(subset, radius);
+      case "sphere":
+        return getSphereLayout(subset, radius);
       default:
         return getCircleLayout(subset, radius);
     }
@@ -57,16 +59,16 @@ function App() {
         setLayout={setLayout}
         imageCount={imageCount}
         setImageCount={setImageCount}
-        max={data_images.length}
+        max={Math.min(200, data_images.length)} // hiển thị tối đa 200 ảnh thôi, đỡ lag
       />
       {/* Thế giới 3D */}
-      <Canvas camera={{ position: [0, 0, 15], fov: 60 }}>
+      <Canvas camera={{ position: [0, 2, 15], fov: 60 }}>
         {/* Ánh sáng (0/1: Tối/Sáng) */}
         <ambientLight intensity={1} />
 
         {/* Camera lùi lại khi tăng số lượng ảnh */}
         <CameraRig radius={radius} controlsRef={controlsRef} />
-        
+
         {/* Chỉ render dựa trên số lượng ảnh đang chọn */}
         {visibleImages.map((img) => (
           <Suspense key={img.id} fallback={null}>
