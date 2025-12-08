@@ -11,7 +11,7 @@ const LAYOUTS = [
 ];
 
 const UIOverlay = ({
-  currentLayout = "random",
+  currentLayout = "circle",
   setLayout,
   imageCount = 20,
   setImageCount,
