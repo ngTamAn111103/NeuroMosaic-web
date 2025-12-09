@@ -1,4 +1,4 @@
-import { Suspense, useMemo, useState, useRef } from "react";
+import { Suspense, useMemo, useState, useRef, useTransition } from "react";
 // Canvas
 import { Canvas, useLoader } from "@react-three/fiber";
 import { MeshBasicMaterial, SphereGeometry, TextureLoader } from "three";
@@ -22,6 +22,9 @@ function App() {
   // useState
   const [imageCount, setImageCount] = useState(20);
   const [layout, setLayout] = useState("sphere");
+  // useTransition
+  // cho biết có đang chờ tải không (để hiện loading icon nếu muốn)
+  const [isPending, startTransition] = useTransition();
 
   // Lấy config cho mode hiện tại
   const config = LAYOUT_CONFIGS[layout];
@@ -57,6 +60,12 @@ function App() {
     }
   }, [imageCount, layout, radius]); // Chạy lại khi 2 biến này đổi
 
+  // Hàm này sẽ đánh dấu việc đổi số lượng ảnh là "Transition" (Ưu tiên thấp)
+  const handleSetImageCount = (value) => {
+    startTransition(() => {
+      setImageCount(value);
+    });
+  };
   return (
     <div className="relative h-screen w-full bg-black">
       {/* UI Overlay */}
@@ -64,7 +73,7 @@ function App() {
         currentLayout={layout}
         setLayout={setLayout}
         imageCount={imageCount}
-        setImageCount={setImageCount}
+        setImsetImageCount={handleSetImageCount}
         max={Math.min(200, data_images.length)} // hiển thị tối đa 200 ảnh thôi, đỡ lag
       />
       {/* Thế giới 3D */}
@@ -78,28 +87,34 @@ function App() {
         <ambientLight intensity={1} />
 
         {/* Camera lùi lại khi tăng số lượng ảnh */}
-        <CameraRig radius={radius} controlsRef={controlsRef} mode={config.rigMode}/>
+        <CameraRig
+          radius={radius}
+          controlsRef={controlsRef}
+          mode={config.rigMode}
+        />
         {/* Tự động reset góc nhìn khi đổi mode  */}
         <CameraResetter
           position={config.initialCameraPosition}
           controlsRef={controlsRef}
         />
 
+        {/* Để lõi cầu riêng với ảnh */}
         <Suspense fallback={null}>
-          {/* Chỉ render khi mode == sphere */}
           {layout === "sphere" && <SphereCore radius={radius} />}
+        </Suspense>
 
-          {/* Render List Ảnh */}
-          {visibleImages.map((img) => (
+        {visibleImages.map((img) => (
+          // 🔥 QUAN TRỌNG: Key nằm ở Suspense ngoài cùng
+          <Suspense key={img.id} fallback={null}>
             <ImageItem
               url={img.thumbnail}
               position={img.position}
               layout={layout}
-              doubleSide={config.doubleSide} //render mặt lưng ảnh
+              mode={layout} // Truyền đúng tên prop bên ImageItem (lúc nãy ta đặt là mode)
+              doubleSide={config.doubleSide}
             />
-          ))}
-        </Suspense>
-
+          </Suspense>
+        ))}
         <Stars
           radius={100}
           depth={100}
