@@ -7,7 +7,8 @@ export const LAYOUT_CONFIGS = {
     itemScale: [1, 1, 1],
     fov: 60,
     rotateSpeed:0.1,
-    doubleSide:false
+    doubleSide:false,
+    rigMode: 'C',
   },
   
   sphere: {
@@ -18,7 +19,8 @@ export const LAYOUT_CONFIGS = {
     itemScale: [1, 1, 1],
     fov: 60,
     rotateSpeed:0.5,
-    doubleSide:true
+    doubleSide:true,
+    rigMode: 'A',
   },
   
 };

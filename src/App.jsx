@@ -78,7 +78,7 @@ function App() {
         <ambientLight intensity={1} />
 
         {/* Camera lùi lại khi tăng số lượng ảnh */}
-        <CameraRig radius={radius} controlsRef={controlsRef} />
+        <CameraRig radius={radius} controlsRef={controlsRef} mode={config.rigMode}/>
         {/* Tự động reset góc nhìn khi đổi mode  */}
         <CameraResetter
           position={config.initialCameraPosition}
