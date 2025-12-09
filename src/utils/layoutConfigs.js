@@ -13,7 +13,7 @@ export const LAYOUT_CONFIGS = {
   
   sphere: {
     // Sphere đẹp nhất khi nhìn trực diện vào tâm
-    initialCameraPosition: [0, 0, 8], 
+    initialCameraPosition: [0, 0, 10], 
     
     // Có thể chỉnh scale khác nếu muốn
     itemScale: [1, 1, 1],

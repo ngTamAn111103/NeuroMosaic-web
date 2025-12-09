@@ -73,7 +73,7 @@ function App() {
         currentLayout={layout}
         setLayout={setLayout}
         imageCount={imageCount}
-        setImsetImageCount={handleSetImageCount}
+        setImageCount={handleSetImageCount}
         max={Math.min(200, data_images.length)} // hiển thị tối đa 200 ảnh thôi, đỡ lag
       />
       {/* Thế giới 3D */}
